@@ -209,6 +209,20 @@ input:focus,select:focus,textarea:focus{border-color:var(--sun);outline:none}
   .stage canvas{height:330px}
   .nav a.hide-s{display:none}
   .bars{grid-template-columns:1fr}
+  /* le bandeau passe sur deux lignes : collé en haut, il mangerait un huitième de l'écran */
+  .nav{position:static}
+  .hero .eyebrow{margin-bottom:10px}
+  /* matrice : la colonne des compétences reste visible pendant qu'on fait défiler les situations */
+  .matrix table{min-width:560px}
+  .matrix th.row{position:sticky;left:0;z-index:1;background:var(--surface);width:150px;min-width:150px;font-size:13.5px;
+    box-shadow:1px 0 0 var(--line)}
+  .matrix th,.matrix td{padding:10px 6px}
+  .tl{flex-basis:min(280px, 82vw)}
+}
+/* sur écran tactile, l'effet de survol resterait bloqué après un tap */
+@media (hover:none){
+  .card:hover{transform:none;box-shadow:none;border-color:var(--line)}
+  .btn:hover{transform:none}
 }
 @media (prefers-reduced-motion: reduce){
   *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
