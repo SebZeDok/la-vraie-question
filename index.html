@@ -102,7 +102,6 @@ section.block{padding-block:56px}
 .small{border:1.5px solid var(--line);background:none;border-radius:999px;padding:7px 13px;font-size:13.5px;font-weight:700}
 .small.go{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .small[aria-pressed="true"]{background:var(--sun);border-color:var(--sun);color:#1A0F05}
-.status{font-family:var(--mono);font-size:11.5px;color:var(--lagoon)}
 body.express .detail{display:none}
 
 /* skills matrix */
@@ -152,23 +151,12 @@ body.express .detail{display:none}
 .field.full{grid-column:1/-1}
 label,.lbl{font-weight:700;font-size:14.5px}
 .hint{font-weight:400;color:var(--muted);font-size:13px}
-input[type=text],select,textarea{width:100%;font:inherit;padding:11px 13px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+input[type=text],input[type=tel],select,textarea{width:100%;font:inherit;padding:11px 13px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
 textarea{min-height:96px;resize:vertical}
 input:focus,select:focus,textarea:focus{border-color:var(--sun);outline:none}
-.scale{display:flex;gap:6px;flex-wrap:wrap}
-.scale button{width:42px;height:42px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font-weight:700}
-.scale button[aria-pressed="true"]{background:var(--sun);border-color:var(--sun);color:#1A0F05}
 .fbbar{grid-column:1/-1;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .note{font-size:13.5px;color:var(--muted)}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:clamp(18px,3vw,32px)}
-
-/* owner */
-.owner{margin-top:28px}
-.owner table{width:100%;border-collapse:collapse;font-size:14px}
-.owner td,.owner th{padding:8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-.bars{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
-.bar{background:var(--bg);border-radius:12px;padding:10px 12px;font-size:13.5px}
-.bar b{font-family:var(--display);font-size:22px;display:block}
 
 /* drawer */
 .scrim{position:fixed;inset:0;background:rgba(10,12,30,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .25s}
@@ -194,7 +182,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--sun);outline:none}
 .sec li b{font-weight:700}
 .ffb{border-top:2px dashed var(--line);padding-top:22px;display:flex;flex-direction:column;gap:14px}
 .ffb h4{font-family:var(--display);font-size:20px;margin:0}
-.reson{display:flex;gap:8px;flex-wrap:wrap}
 
 @media (max-width:980px){
   .hero{grid-template-columns:1fr;padding-block:36px 24px}
@@ -209,7 +196,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--sun);outline:none}
   .method{grid-template-columns:repeat(2,1fr)}
   .stage canvas{height:330px}
   .nav a.hide-s{display:none}
-  .bars{grid-template-columns:1fr}
   /* bandeau tenu sur une ligne pour rester collé en haut sans manger l'écran */
   .nav .wrap{flex-wrap:nowrap;gap:10px}
   .brand{font-size:16px;white-space:nowrap}
@@ -240,7 +226,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--sun);outline:none}
     <a class="hide-s" href="#situations">Situations</a>
     <a class="hide-s" href="#competences">Compétences</a>
     <a class="hide-s" href="#parcours">Parcours</a>
-    <a class="progress" href="#avis" id="progress">Votre avis : 0/6</a>
+    <a class="progress" href="#contact">Me contacter</a>
   </div>
 </header>
 
@@ -249,10 +235,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--sun);outline:none}
     <div>
       <p class="eyebrow">Offre de conseil aux dirigeants</p>
       <h1 id="h1">J’entre dans vos <span class="scribble">systèmes complexes</span>. J’en ressors avec <em>la vraie question</em>.</h1>
-      <p class="lede">Six situations que vivent les dirigeants, ce que j’y apporte, et ce que j’ai déjà fait. Vous me connaissez : votre regard m’aide à rendre l’offre aussi claire que possible.</p>
+      <p class="lede">Six situations que vivent les dirigeants, ce que j’y apporte, et ce que j’ai déjà fait. Si l’une d’elles est la vôtre, parlons-en.</p>
       <div class="ctas">
         <a class="btn primary" href="#situations">Explorer les situations</a>
-        <a class="btn ghost" href="#avis">Donner mon avis · 5 min</a>
+        <a class="btn ghost" href="#contact">Me contacter</a>
       </div>
     </div>
     <figure class="stage" style="margin:0">
@@ -339,31 +325,26 @@ input:focus,select:focus,textarea:focus{border-color:var(--sun);outline:none}
     </div>
   </section>
 
-  <section class="block" id="avis" aria-labelledby="h-avis">
+  <section class="block" id="contact" aria-labelledby="h-contact">
     <div class="head">
       <div>
-        <p class="eyebrow">Votre avis</p>
-        <h2 id="h-avis">Dites-moi ce qui sonne juste, et ce qui sonne faux</h2>
-        <p>Vos réponses ne sont visibles que par moi. Vous pouvez aussi réagir fiche par fiche depuis chaque situation.</p>
+        <p class="eyebrow">Contact</p>
+        <h2 id="h-contact">Parlons de votre situation</h2>
+        <p>Quelques lignes suffisent pour commencer. Le bouton ouvre votre messagerie avec un message prêt à envoyer.</p>
       </div>
     </div>
-    <form class="panel fb" id="fbform" novalidate>
+    <form class="panel fb" id="ctform" novalidate>
       <div class="field"><label for="f-name">Votre prénom et nom</label><input type="text" id="f-name" autocomplete="name"></div>
-      <div class="field"><label for="f-role">Votre rôle et votre entreprise <span class="hint">(facultatif)</span></label><input type="text" id="f-role"></div>
-      <div class="field"><label for="f-first">La situation qui vous parle le plus</label><select id="f-first"></select></div>
-      <div class="field"><span class="lbl" id="l-clar">La page est-elle claire ?</span><div class="scale" id="s-clarity" role="group" aria-labelledby="l-clar"></div></div>
-      <div class="field"><span class="lbl" id="l-want">Envie de travailler avec moi sur un de ces sujets ?</span><div class="scale" id="s-want" role="group" aria-labelledby="l-want"></div></div>
-      <div class="field"><span class="lbl" id="l-tone">Le ton me ressemble-t-il ?</span><div class="scale" id="s-tone" role="group" aria-labelledby="l-tone"></div></div>
-      <div class="field full"><label for="f-call">Qu’est-ce qui vous ferait décrocher le téléphone pour m’appeler ?</label><textarea id="f-call"></textarea></div>
-      <div class="field full"><label for="f-miss">Ce qui manque, ce qui n’est pas clair, ce que vous enlèveriez</label><textarea id="f-miss"></textarea></div>
-      <div class="field full"><label for="f-free">Un souvenir de notre travail ensemble qui devrait figurer ici ? <span class="hint">(facultatif)</span></label><textarea id="f-free"></textarea></div>
+      <div class="field"><label for="f-role">Votre rôle et votre entreprise <span class="hint">(facultatif)</span></label><input type="text" id="f-role" autocomplete="organization"></div>
+      <div class="field"><label for="f-first">La situation qui vous concerne</label><select id="f-first"></select></div>
+      <div class="field"><label for="f-phone">Un numéro pour vous rappeler <span class="hint">(facultatif)</span></label><input type="tel" id="f-phone" autocomplete="tel"></div>
+      <div class="field full"><label for="f-msg">Votre message <span class="hint">(ce que vous vivez, ce que vous aimeriez voir changer)</span></label><textarea id="f-msg"></textarea></div>
       <div class="fbbar">
-        <button class="btn primary" type="submit" id="f-save">Envoyer mon avis</button>
-        <button class="btn ghost" type="button" id="f-copy">Copier mon avis</button>
+        <button class="btn primary" type="submit">Envoyer</button>
+        <button class="btn ghost" type="button" id="f-copy">Copier le message</button>
         <span class="note" id="f-status" role="status"></span>
       </div>
     </form>
-    <div id="owner" class="panel owner" hidden></div>
   </section>
 </main>
 
@@ -441,11 +422,6 @@ const TL = [
 
 const $ = s => document.querySelector(s);
 const chipOf = id => S.find(s=>s.id===id).chip;
-const esc = t => String(t).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-
-/* ---------- state ---------- */
-const state = { name:"", role:"", first:"", clarity:0, want:0, tone:0, call:"", miss:"", free:"", fiches:{} };
-IDS.forEach(id=> state.fiches[id] = {reson:"", clarity:0, comment:""});
 
 /* ---------- cards ---------- */
 function renderGrid(){
@@ -457,8 +433,7 @@ function renderGrid(){
       <p class="vq">${s.q}</p>
       <div class="actions">
         <button class="small go" data-open="${s.id}">Ouvrir la fiche</button>
-        <button class="small" data-me="${s.id}" aria-pressed="${state.fiches[s.id].reson==="vis"}">Je vis ça</button>
-        <span class="status" id="st-${s.id}"></span>
+        <button class="small" data-contact="${s.id}">Parlons-en</button>
       </div>
     </article>`).join("");
 }
@@ -485,12 +460,9 @@ function renderTimeline(){
 
 /* ---------- drawer ---------- */
 let current = -1, lastFocus = null;
-function scaleHTML(key, val, idp){
-  return [1,2,3,4,5].map(n=>`<button type="button" data-scale="${key}" data-v="${n}" aria-pressed="${val===n}" aria-label="${n} sur 5" id="${idp}-${n}">${n}</button>`).join("");
-}
 function openFiche(id, push=true){
   const i = IDS.indexOf(id); if(i<0) return;
-  current = i; const s = S[i]; const f = state.fiches[id];
+  current = i; const s = S[i];
   $("#d-chip").textContent = s.chip;
   $("#d-body").innerHTML = `
     <h2 id="d-title">${s.title}</h2>
@@ -499,13 +471,8 @@ function openFiche(id, push=true){
     <div class="sec brings"><h4>Ce que j’apporte</h4><ul>${s.brings.map(l=>`<li>${l}</li>`).join("")}</ul></div>
     <div class="sec done"><h4>Déjà fait</h4><ul>${s.done.map(l=>`<li>${l}</li>`).join("")}</ul></div>
     <div class="ffb">
-      <h4>Votre réaction sur cette fiche</h4>
-      <div class="reson" role="group" aria-label="Est-ce que cette situation vous parle ?">
-        ${[["vis","Je vis ça"],["proche","Ça me parle un peu"],["pas","Pas mon sujet"]].map(([v,l])=>`<button type="button" class="small" data-reson="${v}" aria-pressed="${f.reson===v}">${l}</button>`).join("")}
-      </div>
-      <div class="field"><span class="lbl" id="dl-clar">Clarté de la fiche</span><div class="scale" role="group" aria-labelledby="dl-clar">${scaleHTML("fclarity", f.clarity, "fc-"+id)}</div></div>
-      <div class="field"><label for="fcom-${id}">Ce que vous changeriez <span class="hint">(un mot, un exemple, une formulation)</span></label><textarea id="fcom-${id}">${esc(f.comment)}</textarea></div>
-      <div class="fbbar"><button type="button" class="btn primary" id="fsave">Enregistrer pour cette fiche</button><span class="note" id="fstatus" role="status"></span></div>
+      <h4>Vous vivez cette situation ?</h4>
+      <div class="fbbar"><button type="button" class="btn primary" data-contact="${s.id}">Parlons-en</button></div>
     </div>`;
   $("#drawer").classList.add("on"); $("#scrim").classList.add("on"); $("#drawer").setAttribute("aria-hidden","false");
   $("#d-body").scrollTop = 0;
@@ -531,20 +498,12 @@ document.addEventListener("keydown", e=>{
 
 document.addEventListener("click", e=>{
   const o = e.target.closest("[data-open]"); if(o){ e.preventDefault(); openFiche(o.dataset.open); return; }
-  const m = e.target.closest("[data-me]");
-  if(m){ const id = m.dataset.me; const f = state.fiches[id]; f.reson = f.reson==="vis" ? "" : "vis";
-    m.setAttribute("aria-pressed", f.reson==="vis"); save("st-"+id); return; }
-  const r = e.target.closest("[data-reson]");
-  if(r && current>=0){ const id = IDS[current]; const f = state.fiches[id]; f.reson = f.reson===r.dataset.reson ? "" : r.dataset.reson;
-    r.parentElement.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.reson===f.reson));
-    const cardBtn = document.querySelector(`[data-me="${id}"]`); if(cardBtn) cardBtn.setAttribute("aria-pressed", f.reson==="vis");
-    return; }
-  const sc = e.target.closest("[data-scale]");
-  if(sc){ const key = sc.dataset.scale, v = +sc.dataset.v;
-    if(key==="fclarity" && current>=0) state.fiches[IDS[current]].clarity = v; else state[key] = v;
-    sc.parentElement.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", +b.dataset.v===v)); return; }
-  if(e.target.id==="fsave" && current>=0){ const id = IDS[current];
-    state.fiches[id].comment = $("#fcom-"+id).value.trim(); save("fstatus"); }
+  const c = e.target.closest("[data-contact]");
+  if(c){ if(current>=0){ lastFocus = null; closeFiche(); }
+    $("#f-first").value = c.dataset.contact;
+    // focus avant le défilement (après, il l'interrompt) ; pas sur tactile, le clavier surgirait en pleine descente
+    if(matchMedia("(hover:hover)").matches) $("#f-msg").focus({preventScroll:true});
+    $("#contact").scrollIntoView({behavior: reduce ? "auto" : "smooth"}); }
 });
 
 /* ---------- level ---------- */
@@ -556,97 +515,32 @@ function setLevel(express){
 $("#lvl-express").onclick = ()=>setLevel(true); $("#lvl-detail").onclick = ()=>setLevel(false);
 try{ if(localStorage.getItem("lvq-level")==="x") setLevel(true); }catch(e){}
 
-/* ---------- form ---------- */
+/* ---------- contact ---------- */
+// adresse assemblée au clic : elle n'apparaît jamais en clair dans la source, hors de portée des robots collecteurs
+const mailto = () => ["sebastien", "wavit.me"].join("@");
 function fillForm(){
-  $("#f-first").innerHTML = `<option value="">Choisir…</option>` + S.map(s=>`<option value="${s.id}">${s.chip} · ${s.title.replace(/[«»]/g,"").trim()}</option>`).join("");
-  $("#f-name").value = state.name; $("#f-role").value = state.role; $("#f-first").value = state.first;
-  $("#f-call").value = state.call; $("#f-miss").value = state.miss; $("#f-free").value = state.free;
-  $("#s-clarity").innerHTML = scaleHTML("clarity", state.clarity, "sc");
-  $("#s-want").innerHTML = scaleHTML("want", state.want, "sw");
-  $("#s-tone").innerHTML = scaleHTML("tone", state.tone, "st");
+  $("#f-first").innerHTML = `<option value="">Choisir…</option>` + S.map(s=>`<option value="${s.id}">${s.chip} · ${s.title.replace(/[«»]/g,"").trim()}</option>`).join("")
+    + `<option value="autre">Autre, ou je ne sais pas encore</option>`;
 }
-function readForm(){
-  state.name = $("#f-name").value.trim(); state.role = $("#f-role").value.trim(); state.first = $("#f-first").value;
-  state.call = $("#f-call").value.trim(); state.miss = $("#f-miss").value.trim(); state.free = $("#f-free").value.trim();
-}
-function progress(){
-  const n = IDS.filter(id=>{const f=state.fiches[id]; return f.reson||f.clarity||f.comment;}).length;
-  $("#progress").textContent = `Votre avis : ${n}/6`;
-}
-const MAILTO = "sebastien@wavit.me";
-$("#fbform").addEventListener("submit", e=>{
-  e.preventDefault(); readForm(); save("f-status");
-  const subject = `Avis sur « La vraie question »${state.name ? " · "+state.name : ""}`;
-  location.href = `mailto:${MAILTO}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(asText())}`;
-  $("#f-status").textContent = `Votre messagerie s’ouvre avec votre avis, il ne reste qu’à l’envoyer. Rien ne s’ouvre ? Copiez votre avis et envoyez-le à ${MAILTO}.`;
-});
-["f-name","f-role","f-call","f-miss","f-free"].forEach(id=> $("#"+id).addEventListener("input", ()=>{ readForm(); draft(); }));
-$("#f-first").addEventListener("change", ()=>{ readForm(); draft(); });
-
 function asText(){
-  readForm();
-  const L = [`Avis de ${state.name||"(sans nom)"}${state.role?" — "+state.role:""}`,
-    `Situation la plus parlante : ${state.first?chipOf(state.first):"-"}`,
-    `Clarté ${state.clarity||"-"}/5 · Envie ${state.want||"-"}/5 · Ton ${state.tone||"-"}/5`,
-    `Ce qui me ferait appeler : ${state.call||"-"}`, `Ce qui manque : ${state.miss||"-"}`, `Souvenir : ${state.free||"-"}`, ""];
-  S.forEach(s=>{const f=state.fiches[s.id]; if(f.reson||f.clarity||f.comment) L.push(`${s.chip} : ${({vis:"je vis ça",proche:"ça me parle un peu",pas:"pas mon sujet"})[f.reson]||"-"} · clarté ${f.clarity||"-"}/5 · ${f.comment||""}`);});
-  return L.join("\n");
+  const v = id => $("#"+id).value.trim(), first = v("f-first");
+  return [v("f-msg"), "",
+    `${v("f-name")||"(nom non précisé)"}${v("f-role")?" — "+v("f-role"):""}`,
+    v("f-phone") ? `Téléphone : ${v("f-phone")}` : "",
+    `Situation : ${first==="autre" ? "autre" : first ? chipOf(first) : "-"}`].filter((l,i)=>l||i===1).join("\n");
 }
+$("#ctform").addEventListener("submit", e=>{
+  e.preventDefault();
+  if(!$("#f-msg").value.trim()){ $("#f-status").textContent = "Écrivez quelques lignes avant d’envoyer."; $("#f-msg").focus(); return; }
+  const name = $("#f-name").value.trim();
+  const subject = `Contact · La vraie question${name ? " · "+name : ""}`;
+  location.href = `mailto:${mailto()}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(asText())}`;
+  $("#f-status").textContent = `Votre messagerie s’ouvre avec votre message, il ne reste qu’à l’envoyer. Rien ne s’ouvre ? Copiez le message et envoyez-le à ${mailto()}.`;
+});
 $("#f-copy").onclick = async ()=>{
-  const t = asText();
-  try{ await navigator.clipboard.writeText(t); $("#f-status").textContent = "Avis copié. Collez-le dans un message pour me l’envoyer."; }
-  catch(e){ const ta = $("#f-miss"); $("#f-status").textContent = "La copie automatique est bloquée ici. Sélectionnez le texte du formulaire pour le copier."; ta.focus(); }
+  try{ await navigator.clipboard.writeText(asText()); $("#f-status").textContent = `Message copié. Collez-le dans un e-mail à ${mailto()}.`; }
+  catch(e){ $("#f-status").textContent = `La copie automatique est bloquée ici. Écrivez-moi directement à ${mailto()}.`; }
 };
-
-/* ---------- persistence ---------- */
-let db = null, uid = null, writing = Promise.resolve();
-function draft(){ try{ localStorage.setItem("lvq-draft", JSON.stringify(state)); }catch(e){} }
-function loadDraft(){ try{ const d = JSON.parse(localStorage.getItem("lvq-draft")||"null"); if(d) merge(d); }catch(e){} }
-function merge(d){
-  ["name","role","first","call","miss","free"].forEach(k=>{ if(typeof d[k]==="string") state[k]=d[k]; });
-  ["clarity","want","tone"].forEach(k=>{ if(typeof d[k]==="number") state[k]=d[k]; });
-  if(d.fiches) IDS.forEach(id=>{ const f=d.fiches[id]; if(f) state.fiches[id] = {reson:String(f.reson||""), clarity:+f.clarity||0, comment:String(f.comment||"")}; });
-}
-function save(statusId){
-  draft(); progress();
-  const st = document.getElementById(statusId);
-  if(!db || !uid){ if(st) st.textContent = "Noté sur cet appareil. Utilisez « Copier mon avis » pour me l’envoyer."; return; }
-  if(st) st.textContent = "Enregistrement…";
-  const body = JSON.parse(JSON.stringify(state)); body.updatedAt = new Date().toISOString();
-  writing = writing.then(()=> db.doc("feedback/"+uid).set(body))
-    .then(()=>{ const el=document.getElementById(statusId); if(el) el.textContent = "Enregistré. Merci !"; })
-    .catch(err=>{ const el=document.getElementById(statusId); if(el) el.textContent =
-      err && err.code==="invalid_argument" ? "Je ne peux pas enregistrer depuis votre accès. Utilisez « Copier mon avis »." : "L’enregistrement a échoué. Réessayez dans un instant."; });
-}
-
-async function initData(){
-  if(!window.claude || !window.claude.use) return;
-  try{
-    const [d, u] = await Promise.all([claude.use("db"), claude.use("user")]);
-    if(!d || !u) return;
-    const id = await u.id(); if(!id) return;
-    db = d; uid = id;
-    const snap = await db.doc("feedback/"+uid).get();
-    if(snap.exists){ merge(snap.data()); fillForm(); renderGrid(); progress(); }
-    if(await u.isOwner()) ownerView();
-  }catch(e){ /* page reste utilisable en mode local */ }
-}
-
-function ownerView(){
-  const box = $("#owner"); box.hidden = false;
-  box.innerHTML = `<p class="eyebrow">Visible par vous seul</p><h3 style="font-size:24px;margin-top:6px">Retours reçus</h3><div id="ow"></div>`;
-  db.collection("feedback").onSnapshot(q=>{
-    const rows = q.docs.map(d=>d.data()).filter(Boolean);
-    const avg = k => { const v = rows.map(r=>+r[k]).filter(Boolean); return v.length ? (v.reduce((a,b)=>a+b,0)/v.length).toFixed(1) : "-"; };
-    const vis = id => rows.filter(r=>r.fiches && r.fiches[id] && r.fiches[id].reson==="vis").length;
-    $("#ow").innerHTML = `
-      <div class="bars"><div class="bar"><b>${rows.length}</b>retours</div><div class="bar"><b>${avg("clarity")}</b>clarté moyenne /5</div><div class="bar"><b>${avg("want")}</b>envie moyenne /5</div></div>
-      <div class="bars">${S.map(s=>`<div class="bar"><b>${vis(s.id)}</b>« je vis ça » · ${s.chip}</div>`).join("")}</div>
-      <div style="overflow-x:auto"><table><thead><tr><th>Qui</th><th>Situation n°1</th><th>Ce qui ferait appeler</th><th>Ce qui manque</th></tr></thead><tbody>
-      ${rows.map(r=>`<tr><td>${esc(r.name||"Anonyme")}<br><span class="note">${esc(r.role||"")}</span></td><td>${r.first&&IDS.includes(r.first)?chipOf(r.first):"-"}</td><td>${esc(r.call||"")}</td><td>${esc(r.miss||"")}</td></tr>`).join("") || `<tr><td colspan="4" class="note">Aucun retour pour l’instant. Partagez la page avec vos bêta-testeurs en accès Contributeur.</td></tr>`}
-      </tbody></table></div>`;
-  }, ()=>{ $("#ow").innerHTML = `<p class="note">Les retours ne peuvent pas être chargés dans cette vue.</p>`; });
-}
 
 /* ---------- hero : du chaos à la clarté ---------- */
 const cv = $("#tangle"), ctx = cv.getContext("2d"), nodesEl = $("#nodes"), slider = $("#clarity");
@@ -699,10 +593,9 @@ matchMedia("(prefers-color-scheme: dark)").addEventListener("change", draw);
 new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
 
 /* ---------- boot ---------- */
-loadDraft(); renderGrid(); renderMatrix(); renderTimeline(); fillForm(); progress();
+renderGrid(); renderMatrix(); renderTimeline(); fillForm();
 build(); play();
 const h = (location.hash||"").slice(1); if(IDS.includes(h)) setTimeout(()=>openFiche(h,false), 400);
-initData();
 </script>
 
 </body>
