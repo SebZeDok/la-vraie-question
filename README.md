@@ -2,7 +2,7 @@
 
 Page de présentation de mon offre de conseil aux dirigeants : six situations de transformation, les compétences mobilisées, mon parcours, et l'offre de CTO à temps partagé.
 
-Une page HTML autonome (`index.html`), sans dépendance à installer.
+Une page HTML autonome (`index.html`), sans dépendance à installer, à l'identité wavit : jaune `#F3E14D` et noir sur blanc, titres en Fraunces, logo `wavit-logo.jpg` (même charte que le site seb-conseiller).
 
 ## Voir la page
 
