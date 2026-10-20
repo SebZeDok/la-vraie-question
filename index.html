@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>La vraie question</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout : un fil qui part du chaos (hero interactif) et se dénoue en six situations ; on lit en vue d'ensemble ou on zoome sur une fiche. */
+:root{
+  --bg:#F3F5FA; --surface:#FFFFFF; --ink:#141834; --muted:#5A6082; --line:#DCE0EC;
+  --sun:#FF7A1A; --sun-soft:#FFE6D3; --lagoon:#0B9C9C; --lagoon-soft:#D5F1EF; --berry:#C2306B;
+  --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body:"Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono:"DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r:18px; --shadow:0 18px 50px -24px rgba(20,24,52,.35);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1124; --surface:#171B36; --ink:#EEF0FB; --muted:#A3A8C7; --line:#2A3058;
+  --sun:#FF9638; --sun-soft:#3A2618; --lagoon:#2FD1C8; --lagoon-soft:#12343A; --berry:#FF6FA6;
+  --shadow:0 18px 50px -24px rgba(0,0,0,.7); color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0E1124; --surface:#171B36; --ink:#EEF0FB; --muted:#A3A8C7; --line:#2A3058;
+  --sun:#FF9638; --sun-soft:#3A2618; --lagoon:#2FD1C8; --lagoon-soft:#12343A; --berry:#FF6FA6;
+  --shadow:0 18px 50px -24px rgba(0,0,0,.7); color-scheme:dark }
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;margin:0;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:30;background:var(--bg)}
+.wrap{max-width:1180px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--sun);outline-offset:3px;border-radius:8px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top, 0px);z-index:20;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);margin:0 calc(-1 * max(16px, env(safe-area-inset-left, 0px)));padding:10px max(16px, env(safe-area-inset-left, 0px))}
+.nav .wrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:800;font-size:18px;display:flex;align-items:center;gap:8px;margin-right:auto}
+.brand i{width:12px;height:12px;border-radius:50%;background:var(--sun);box-shadow:16px 0 0 var(--lagoon);margin-right:16px}
+.nav a{color:var(--muted);text-decoration:none;font-weight:600;font-size:14px}
+.nav a:hover{color:var(--ink)}
+.seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{border:0;background:none;padding:6px 12px;border-radius:999px;font-size:13px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.progress{font-family:var(--mono);font-size:12px;padding:6px 10px;border-radius:999px;background:var(--sun-soft);color:var(--ink);white-space:nowrap}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center;padding-block:56px 36px}
+.hero h1{font-size:clamp(36px,5.4vw,66px);line-height:1.02;font-weight:800}
+.hero h1 em{font-style:normal;color:var(--sun)}
+.hero h1 .scribble{background:linear-gradient(transparent 62%, var(--lagoon-soft) 62%);padding:0 .08em}
+.lede{font-size:19px;color:var(--muted);max-width:52ch;margin-top:20px}
+.ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.btn{border:0;border-radius:999px;padding:13px 22px;font-weight:700;font-size:15px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:transform .15s ease}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--sun);color:#1A0F05}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.stage{position:relative;background:var(--surface);border-radius:28px;border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.stage canvas{display:block;width:100%;height:420px}
+.stage .nodes{position:absolute;inset:0;pointer-events:none}
+.node{position:absolute;transform:translate(-100%,-50%);pointer-events:auto;border:0;background:var(--ink);color:var(--bg);font-size:12.5px;font-weight:700;
+  padding:6px 11px;border-radius:999px;white-space:nowrap;transition:opacity .3s ease, transform .2s ease}
+.node:hover{background:var(--sun);color:#1A0F05}
+.stagebar{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--muted)}
+.stagebar input{flex:1;accent-color:var(--sun);min-width:0}
+.stagebar button{border:1px solid var(--line);background:none;border-radius:999px;padding:4px 10px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+/* proof */
+.proof{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;padding-block:8px 48px}
+.proof div{border-top:2px solid var(--ink);padding-top:10px}
+.proof b{display:block;font-family:var(--display);font-size:34px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.proof span{font-size:13.5px;color:var(--muted)}
+
+/* sections */
+section.block{padding-block:56px}
+.head{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:26px}
+.head h2{font-size:clamp(28px,3.6vw,44px);font-weight:800}
+.head p{color:var(--muted);max-width:56ch;margin-top:8px}
+
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;display:flex;flex-direction:column;gap:14px;
+  transition:transform .2s ease, box-shadow .2s ease, border-color .2s;position:relative;min-width:0}
+.card:hover{transform:translateY(-4px) rotate(-.25deg);box-shadow:var(--shadow);border-color:var(--ink)}
+.chip{align-self:flex-start;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:999px;background:var(--lagoon-soft);color:var(--ink)}
+.card h3{font-size:24px;line-height:1.12;font-weight:800}
+.vq{font-family:var(--display);font-size:17px;line-height:1.35;font-weight:600;border-left:3px solid var(--sun);padding-left:12px}
+.symptoms{display:flex;flex-direction:column;gap:6px;font-size:14.5px;color:var(--muted)}
+.symptoms li{list-style:none;padding-left:18px;position:relative}
+.symptoms li::before{content:"";position:absolute;left:2px;top:.62em;width:7px;height:7px;border-radius:50%;border:1.5px solid var(--berry)}
+.symptoms{padding:0;margin:0}
+.card .actions{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.small{border:1.5px solid var(--line);background:none;border-radius:999px;padding:7px 13px;font-size:13.5px;font-weight:700}
+.small.go{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.small[aria-pressed="true"]{background:var(--sun);border-color:var(--sun);color:#1A0F05}
+.status{font-family:var(--mono);font-size:11.5px;color:var(--lagoon)}
+body.express .detail{display:none}
+
+/* skills matrix */
+.matrix{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.matrix table{border-collapse:collapse;width:100%;min-width:760px}
+.matrix th,.matrix td{padding:12px 10px;text-align:center;border-bottom:1px solid var(--line)}
+.matrix th.row{text-align:left;font-weight:600;font-size:14.5px;width:32%}
+.matrix th.row small{display:block;font-weight:400;color:var(--muted);font-size:12.5px}
+.matrix thead th{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.matrix thead th button{border:0;background:none;font:inherit;color:inherit;text-transform:inherit;letter-spacing:inherit}
+.matrix thead th button:hover{color:var(--sun)}
+.dot{display:inline-block;width:16px;height:16px;border-radius:50%;transition:transform .2s}
+.dot.core{background:var(--sun)}
+.dot.support{border:2px solid var(--lagoon)}
+.matrix tr:hover td,.matrix tr:hover th.row{background:color-mix(in srgb, var(--sun-soft) 55%, transparent)}
+.matrix td.hl{background:color-mix(in srgb, var(--lagoon-soft) 70%, transparent)}
+.legend{display:flex;gap:18px;font-size:13px;color:var(--muted);margin-top:12px;flex-wrap:wrap;align-items:center}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+
+.method{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:28px}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;min-width:0}
+.step b{font-family:var(--mono);color:var(--sun);font-size:12px}
+.step p{font-weight:600;font-size:14.5px;margin-top:4px;line-height:1.3}
+
+/* timeline */
+.timeline{display:flex;gap:14px;overflow-x:auto;padding:6px 2px 18px;scroll-snap-type:x mandatory}
+.tl{flex:0 0 250px;scroll-snap-align:start;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;position:relative}
+.tl .yr{font-family:var(--display);font-size:30px;font-weight:800;color:var(--lagoon);line-height:1}
+.tl h3{font-size:16.5px;margin-top:8px;line-height:1.25}
+.tl p{font-size:14px;color:var(--muted);margin-top:6px}
+.tl .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tl .tags button{border:0;background:var(--lagoon-soft);border-radius:999px;font-size:11.5px;padding:3px 8px;font-weight:600}
+.tl .tags button:hover{background:var(--sun);color:#1A0F05}
+
+/* exit door */
+.door{background:var(--ink);color:var(--bg);border-radius:28px;padding:44px clamp(20px,4vw,56px);display:grid;grid-template-columns:1.2fr 1fr;gap:36px;align-items:center;position:relative;overflow:hidden}
+.door h2{font-size:clamp(30px,4vw,48px);font-weight:800}
+.door h2 em{font-style:normal;color:var(--sun)}
+.door p{opacity:.85;margin-top:14px;max-width:52ch}
+.door ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.door li{padding:12px 14px;border:1px solid color-mix(in srgb, var(--bg) 25%, transparent);border-radius:12px;font-size:15px}
+.door .proofline{grid-column:1/-1;font-family:var(--mono);font-size:13px;opacity:.8;border-top:1px solid color-mix(in srgb, var(--bg) 25%, transparent);padding-top:16px}
+
+/* feedback */
+.fb{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.full{grid-column:1/-1}
+label,.lbl{font-weight:700;font-size:14.5px}
+.hint{font-weight:400;color:var(--muted);font-size:13px}
+input[type=text],select,textarea{width:100%;font:inherit;padding:11px 13px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+textarea{min-height:96px;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:var(--sun);outline:none}
+.scale{display:flex;gap:6px;flex-wrap:wrap}
+.scale button{width:42px;height:42px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font-weight:700}
+.scale button[aria-pressed="true"]{background:var(--sun);border-color:var(--sun);color:#1A0F05}
+.fbbar{grid-column:1/-1;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.note{font-size:13.5px;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:clamp(18px,3vw,32px)}
+
+/* owner */
+.owner{margin-top:28px}
+.owner table{width:100%;border-collapse:collapse;font-size:14px}
+.owner td,.owner th{padding:8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.bars{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.bar{background:var(--bg);border-radius:12px;padding:10px 12px;font-size:13.5px}
+.bar b{font-family:var(--display);font-size:22px;display:block}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(10,12,30,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(760px,100%);background:var(--bg);z-index:50;transform:translateX(102%);transition:transform .35s cubic-bezier(.2,.8,.2,1);
+  display:flex;flex-direction:column;box-shadow:-30px 0 60px -30px rgba(0,0,0,.4);
+  padding-top:env(safe-area-inset-top, 0px);padding-bottom:env(safe-area-inset-bottom, 0px);padding-right:env(safe-area-inset-right, 0px)}
+.drawer.on{transform:none}
+.dtop{display:flex;align-items:center;gap:10px;padding:14px 22px;border-bottom:1px solid var(--line)}
+.dtop .chip{margin-right:auto}
+.iconbtn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);font-size:17px;display:grid;place-items:center}
+.dbody{overflow-y:auto;padding:26px 22px 40px;display:flex;flex-direction:column;gap:26px}
+.dbody h2{font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.05}
+.bigq{font-family:var(--display);font-size:clamp(20px,2.6vw,26px);font-weight:600;line-height:1.3;background:var(--sun-soft);border-radius:var(--r);padding:20px 22px;position:relative}
+.bigq .eyebrow{display:block;margin-bottom:8px;color:var(--ink);opacity:.7}
+.sec h4{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:500}
+.sec ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.sec li{padding-left:22px;position:relative}
+.sec.lives li::before{content:"";position:absolute;left:3px;top:.6em;width:8px;height:8px;border-radius:50%;border:1.8px solid var(--berry)}
+.sec.brings li::before{content:"";position:absolute;left:0;top:.55em;width:12px;height:3px;border-radius:2px;background:var(--sun)}
+.sec.done li{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px 12px 40px}
+.sec.done li::before{content:"✓";position:absolute;left:14px;top:12px;color:var(--lagoon);font-weight:800}
+.sec li b{font-weight:700}
+.ffb{border-top:2px dashed var(--line);padding-top:22px;display:flex;flex-direction:column;gap:14px}
+.ffb h4{font-family:var(--display);font-size:20px;margin:0}
+.reson{display:flex;gap:8px;flex-wrap:wrap}
+
+@media (max-width:980px){
+  .hero{grid-template-columns:1fr;padding-block:36px 24px}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .proof{grid-template-columns:repeat(3,1fr)}
+  .method{grid-template-columns:repeat(3,1fr)}
+  .door{grid-template-columns:1fr}
+}
+@media (max-width:620px){
+  .grid,.fb{grid-template-columns:1fr}
+  .proof{grid-template-columns:repeat(2,1fr)}
+  .method{grid-template-columns:repeat(2,1fr)}
+  .stage canvas{height:330px}
+  .nav a.hide-s{display:none}
+  .bars{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <div class="brand"><i aria-hidden="true"></i>Sébastien Richard</div>
+    <a class="hide-s" href="#situations">Situations</a>
+    <a class="hide-s" href="#competences">Compétences</a>
+    <a class="hide-s" href="#parcours">Parcours</a>
+    <div class="seg" role="group" aria-label="Niveau de lecture">
+      <button id="lvl-express" aria-pressed="false">Express</button>
+      <button id="lvl-detail" aria-pressed="true">Détaillé</button>
+    </div>
+    <a class="progress" href="#avis" id="progress">Votre avis : 0/6</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero" aria-labelledby="h1">
+    <div>
+      <p class="eyebrow">Bêta-test · offre de conseil aux dirigeants</p>
+      <h1 id="h1">J’entre dans vos <span class="scribble">systèmes complexes</span>. J’en ressors avec <em>la vraie question</em>.</h1>
+      <p class="lede">Six situations que vivent les dirigeants, ce que j’y apporte, et ce que j’ai déjà fait. Vous me connaissez : votre regard m’aide à rendre l’offre aussi claire que possible.</p>
+      <div class="ctas">
+        <a class="btn primary" href="#situations">Explorer les situations</a>
+        <a class="btn ghost" href="#avis">Donner mon avis · 5 min</a>
+      </div>
+    </div>
+    <figure class="stage" style="margin:0">
+      <canvas id="tangle" aria-label="Des fils emmêlés qui se démêlent en six situations"></canvas>
+      <div class="nodes" id="nodes"></div>
+      <div class="stagebar">
+        <span>Complexe</span>
+        <input id="clarity" type="range" min="0" max="100" value="100" aria-label="Du complexe au clair">
+        <span>Clair</span>
+        <button id="replay" type="button">Rejouer</button>
+      </div>
+    </figure>
+  </section>
+
+  <div class="proof" aria-label="Quelques repères">
+    <div><b>8 ans</b><span>CTO à temps partagé d’une plateforme SaaS</span></div>
+    <div><b>100+</b><span>releases documentées, de la v1.0 à la v10</span></div>
+    <div><b>3 500+</b><span>tickets pilotés dans Jira</span></div>
+    <div><b>670</b><span>pages de documentation, reprenable par un tiers</span></div>
+    <div><b>÷4</b><span>de budget sans arrêter de livrer</span></div>
+  </div>
+
+  <section class="block" id="situations" aria-labelledby="h-sit">
+    <div class="head">
+      <div>
+        <p class="eyebrow">Six situations</p>
+        <h2 id="h-sit">Laquelle vivez-vous en ce moment ?</h2>
+        <p>Chaque fiche part de ce que vit le dirigeant, pose la vraie question, puis montre ce que j’apporte et ce que j’ai déjà fait. Ouvrez une fiche pour la voir en détail.</p>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="block" id="competences" aria-labelledby="h-comp">
+    <div class="head">
+      <div>
+        <p class="eyebrow">Vue d’ensemble</p>
+        <h2 id="h-comp">Les mêmes compétences, combinées autrement</h2>
+        <p>Chaque situation mobilise un mélange différent. Survolez une ligne pour voir où une compétence intervient, cliquez une colonne pour ouvrir la fiche.</p>
+      </div>
+    </div>
+    <div class="matrix"><table id="matrix"></table></div>
+    <div class="legend"><span><i class="dot core"></i>au cœur de la situation</span><span><i class="dot support"></i>en appui</span></div>
+
+    <p class="eyebrow" style="margin-top:40px">Ma méthode, dans l’ordre</p>
+    <div class="method">
+      <div class="step"><b>1</b><p>Écouter le dirigeant et le terrain</p></div>
+      <div class="step"><b>2</b><p>Cartographier le système</p></div>
+      <div class="step"><b>3</b><p>Repérer les tensions et les chiffres qui ne collent pas</p></div>
+      <div class="step"><b>4</b><p>Questionner les frontières du problème</p></div>
+      <div class="step"><b>5</b><p>Reformuler la vraie question</p></div>
+      <div class="step"><b>6</b><p>La tester avec vous avant d’agir</p></div>
+    </div>
+  </section>
+
+  <section class="block" id="parcours" aria-labelledby="h-par">
+    <div class="head">
+      <div>
+        <p class="eyebrow">Parcours</p>
+        <h2 id="h-par">Douze ans dans des systèmes réels</h2>
+        <p>Indépendant depuis 2014. Faites défiler : chaque étape renvoie aux situations qu’elle illustre.</p>
+      </div>
+    </div>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+  <section class="block" aria-labelledby="h-door">
+    <div class="door">
+      <div>
+        <p class="eyebrow" style="color:inherit;opacity:.7">La porte de sortie commune</p>
+        <h2 id="h-door">Et si vous n’avez pas de <em>CTO</em> ?</h2>
+        <p>Dans ces six situations, il manque souvent la même personne : quelqu’un qui traduit votre stratégie en décisions techniques, et vos décisions techniques en impact business. Sans le besoin ni le budget d’un CTO à plein temps, c’est le rôle que je tiens en temps partagé.</p>
+      </div>
+      <ul>
+        <li>Quelques jours par mois : roadmap, arbitrages, architecture, pilotage de l’équipe, process et budget</li>
+        <li>Une place au CODIR, pour que la technique serve la stratégie</li>
+        <li>Une organisation qui reste remplaçable : tout est documenté, l’équipe gagne en autonomie</li>
+      </ul>
+      <p class="proofline">Déjà fait : de 2018 à 2026, CTO à temps partagé d’une plateforme SaaS, de la page blanche à la v10. Plus de 100 releases, des budgets divisés par quatre sans arrêter de livrer.</p>
+    </div>
+  </section>
+
+  <section class="block" id="avis" aria-labelledby="h-avis">
+    <div class="head">
+      <div>
+        <p class="eyebrow">Votre avis</p>
+        <h2 id="h-avis">Dites-moi ce qui sonne juste, et ce qui sonne faux</h2>
+        <p>Vos réponses ne sont visibles que par moi. Vous pouvez aussi réagir fiche par fiche depuis chaque situation.</p>
+      </div>
+    </div>
+    <form class="panel fb" id="fbform" novalidate>
+      <div class="field"><label for="f-name">Votre prénom et nom</label><input type="text" id="f-name" autocomplete="name"></div>
+      <div class="field"><label for="f-role">Votre rôle et votre entreprise <span class="hint">(facultatif)</span></label><input type="text" id="f-role"></div>
+      <div class="field"><label for="f-first">La situation qui vous parle le plus</label><select id="f-first"></select></div>
+      <div class="field"><span class="lbl" id="l-clar">La page est-elle claire ?</span><div class="scale" id="s-clarity" role="group" aria-labelledby="l-clar"></div></div>
+      <div class="field"><span class="lbl" id="l-want">Envie de travailler avec moi sur un de ces sujets ?</span><div class="scale" id="s-want" role="group" aria-labelledby="l-want"></div></div>
+      <div class="field"><span class="lbl" id="l-tone">Le ton me ressemble-t-il ?</span><div class="scale" id="s-tone" role="group" aria-labelledby="l-tone"></div></div>
+      <div class="field full"><label for="f-call">Qu’est-ce qui vous ferait décrocher le téléphone pour m’appeler ?</label><textarea id="f-call"></textarea></div>
+      <div class="field full"><label for="f-miss">Ce qui manque, ce qui n’est pas clair, ce que vous enlèveriez</label><textarea id="f-miss"></textarea></div>
+      <div class="field full"><label for="f-free">Un souvenir de notre travail ensemble qui devrait figurer ici ? <span class="hint">(facultatif)</span></label><textarea id="f-free"></textarea></div>
+      <div class="fbbar">
+        <button class="btn primary" type="submit" id="f-save">Envoyer mon avis</button>
+        <button class="btn ghost" type="button" id="f-copy">Copier mon avis</button>
+        <span class="note" id="f-status" role="status"></span>
+      </div>
+    </form>
+    <div id="owner" class="panel owner" hidden></div>
+  </section>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="d-title" aria-hidden="true">
+  <div class="dtop">
+    <span class="chip" id="d-chip"></span>
+    <button class="iconbtn" id="d-prev" aria-label="Situation précédente">←</button>
+    <button class="iconbtn" id="d-next" aria-label="Situation suivante">→</button>
+    <button class="iconbtn" id="d-close" aria-label="Fermer">✕</button>
+  </div>
+  <div class="dbody" id="d-body"></div>
+</aside>
+
+<script>
+const S = [
+ {id:"equipe", chip:"Équipe", title:"« Mon équipe tech ne suit plus »",
+  lives:["<b>L’équipe a grandi, mais on livre moins.</b> Les nouveaux mettent des mois à être productifs, les anciens les aident au lieu de développer.","<b>Le développement est externalisé, et il ne voit pas ce qu’il paie.</b> La dernière démo s’est mal passée.","<b>Le lead dev annonce son départ.</b> Il se demande s’il faut tout arrêter ou changer d’équipe."],
+  q:"Le problème vient-il des personnes, de l’organisation, ou de ce que vous ne voyez pas ?",
+  brings:["<b>Un état des lieux factuel :</b> ce qui est produit, ce qui bloque et pourquoi.","<b>Des rôles clairs :</b> qui spécifie, estime, développe, teste et décide. Pour un prestataire, ce qu’il fait et ce qu’il ne fait pas, écrit dès le départ.","<b>Une intégration rapide</b> des nouveaux, des juniors comme d’une agence.","<b>Des preuves visibles pour vous :</b> une démo régulière, un indicateur simple de livré contre prévu, un compte rendu mensuel.","<b>La relève préparée avant le départ :</b> binôme, documentation, transfert des accès."],
+  done:["Pendant 8 ans, j’ai piloté une équipe de freelances, d’alternants et d’un stagiaire, puis une agence étrangère à distance et en anglais, sans arrêter les livraisons.","Un dirigeant qui envisageait d’arrêter son projet a retrouvé confiance après un diagnostic franc. J’ai proposé au prestataire une organisation cible, avec des rôles clarifiés.","J’ai recruté et tutoré deux alternants. L’un a mené une migration majeure et l’a présentée en soutenance d’ingénieur.","J’ai cadré une externalisation : NDA, propriété intellectuelle, onboarding, suivi hebdomadaire."]},
+ {id:"livraison", chip:"Livraison", title:"« On livre en retard, ou à côté »",
+  lives:["Les dates glissent et chaque mise en production fait peur. Les clients découvrent les bugs avant l’équipe.","Quand ça sort, les équipes ne s’en servent pas et retournent sur Excel.","Il a le sentiment de payer pour rien."],
+  q:"Où se perd le temps entre l’idée et la mise en production, et comment saura-t-on qu’une fonctionnalité a réussi ?",
+  brings:["<b>La mesure du cycle réel,</b> ticket par ticket : spécification, développement, test, mise en production.","<b>Un critère de succès métier avant de développer :</b> qui l’utilise, pour quoi faire, et faut-il plutôt l’acheter ?","<b>Un processus de livraison clair :</b> cadence, statuts à prérequis, tri des bugs, définition du « fini ».","<b>Des tests reliés au métier,</b> automatisés progressivement, et un comité de pilotage avec le métier."],
+  done:["J’ai bâti le process de livraison d’une plateforme SaaS : plus de 100 releases documentées en 8 ans.","J’ai démontré que le retard venait de délais de validation métier de 20 jours à 3 mois, pas des développeurs. Relances automatiques, testeur dédié et COPIL trimestriel ont suivi.","J’ai conçu une matrice des droits qui sert aussi de grille de test, avec un code couleur : test métier à faire, test automatisé fait, écart avec le besoin.","J’ai abandonné un CRM développé en interne mais non utilisé, au profit d’un outil du marché. Depuis, je fais un test « faire ou acheter » à chaque fois."]},
+ {id:"ia", chip:"IA", title:"« On doit passer à l’IA, mais par où commencer ? »",
+  lives:["Ses concurrents communiquent sur l’IA et ses clients posent la question.","Ses équipes testent chacune dans leur coin.","Il a peur de rater le virage, de payer un gadget ou d’exposer les données de ses clients."],
+  q:"Où l’IA crée-t-elle une valeur mesurable chez vous, et vos données, vos processus et votre code sont-ils prêts à l’accueillir sans risque ?",
+  brings:["<b>Des cas d’usage choisis pour leur valeur,</b> pas pour l’effet.","<b>Des prototypes chiffrés</b> avant d’industrialiser.","<b>Des règles claires :</b> assistant ou copilote, ce qu’on garde humain.","<b>La confidentialité et la souveraineté</b> des données.","<b>L’adoption par les équipes,</b> dans le produit comme dans la fabrication du logiciel."],
+  done:["J’ai prototypé la transcription de sessions visio et l’ai chiffrée à environ 3,60 € la session, avant une V1.","J’ai conçu un compagnon IA sur une base de connaissances métier et des agents de jeu de rôle commercial.","J’ai défini une règle produit simple : « assistant IA oui, copilote non ».","J’ai identifié les risques de confidentialité des données envoyées à des IA tierces et formulé des recommandations.","J’ai conçu et lancé un plan d’adoption de l’IA pour une équipe de développement : expérience de 2 semaines, règles minimales, 3 indicateurs."]},
+ {id:"savoir", chip:"Savoir", title:"« Tout est dans la tête de quelques personnes »",
+  lives:["Chaque demande est traitée différemment selon qui la reçoit.","Un seul développeur connaît le système et les accès sont sur une seule boîte mail.","Personne ne peut dire ce qui se passe si on débranche tel outil.","Il dort mal à l’idée que quelqu’un parte."],
+  q:"Votre savoir n’est écrit nulle part. Qu’est-ce qui est critique, qui le détient, et combien de temps tiendriez-vous si cette personne disparaissait demain ?",
+  brings:["<b>Une cartographie :</b> les applications, les flux, les dépendances humaines et techniques.","<b>Des règles métier rendues explicites :</b> ateliers sur des cas réels, processus BPMN, matrice des rôles, lexique commun.","<b>Un plan de réduction du risque :</b> documentation, binômes, transfert d’accès, gestionnaire de mots de passe, double authentification.","<b>Une documentation qu’un tiers peut suivre,</b> reliée aux tickets pour qu’elle reste vivante."],
+  done:["J’ai repris un système critique (100+ réseaux, 192 licences) après le départ de son unique responsable en poste depuis 8 ans, en remontant le code existant.","J’ai documenté de bout en bout une plateforme reprenable par un tiers, en 670 pages couvrant le métier, le pilotage, la technique et les tests.","J’ai transformé des usages flous en règles unifiées, et conçu un modèle de droits à 5 profils et 5 rôles.","J’ai remplacé une brique dépendant d’un seul expert par un service managé."]},
+ {id:"plateforme", chip:"Plateforme", title:"« Notre plateforme a vieilli »",
+  lives:["Les pages mettent 30 secondes à s’afficher et chaque évolution casse autre chose.","L’outil actuel coûte trop cher ou n’est plus maintenu.","Les développeurs veulent « tout refaire », et il a vu des migrations paralyser une entreprise pendant six mois."],
+  q:"Faut-il tout refaire, ou consolider au bon endroit, dans le bon ordre, sans arrêter de livrer ?",
+  brings:["<b>Un diagnostic chiffré :</b> où ça coince, ce qui tiendra ou non à la prochaine étape de croissance.","<b>Une comparaison des options :</b> solution du marché, assemblage d’outils ou sur mesure, avec coûts, risques et dépendances.","<b>Une migration progressive,</b> avec des versions intermédiaires, des tests de non-régression et un retour arrière possible.","<b>De la résilience :</b> infra as code, sauvegardes, post-mortems."],
+  done:["Une étude de scalabilité a conduit à refondre l’infrastructure, mise en production en 48 h.","J’ai mené sur deux ans la sortie d’un framework vieillissant vers une stack moderne, sans interrompre les releases.","J’ai fait migrer une activité de Zoom, Trello et CRM vers une plateforme dédiée, en 4 versions, sans coupure de service.","J’ai comparé visio auto-hébergée et service managé, puis piloté la bascule.","J’ai rédigé le post-mortem d’une crise causée par une mise à jour de navigateur : causes racines, correctif le jour même, trois scénarios pour éviter la récidive."]},
+ {id:"donnees", chip:"Données", title:"« Je ne peux pas me fier à mes données »",
+  lives:["Le même client existe dans 5 outils, et deux tableaux de bord donnent deux chiffres différents.","Chaque réunion commence par un débat sur la donnée.","Il décide de ses investissements sur des estimations."],
+  q:"Quelle est votre source de vérité, qui en est responsable, et quels chiffres décident vraiment de quelque chose ?",
+  brings:["<b>Une cartographie des sources</b> et un audit de la chaîne de la donnée.","<b>Des scénarios d’architecture présentés à la direction :</b> quel outil porte le référentiel, ce qu’il coûte.","<b>Un dictionnaire de données et des règles de qualité :</b> normalisation, dédoublonnage.","<b>Peu d’indicateurs, reliés à des décisions,</b> plutôt que des tableaux de bord exhaustifs."],
+  done:["J’ai unifié les 8 bases clients d’un groupe de 4 marques dans un référentiel unique : scénarios validés par la direction, dictionnaire de données, reprise en 3 lots.","En croisant les données, j’ai révélé 115 réseaux réellement actifs là où 158 étaient déclarés."]}
+];
+const IDS = S.map(s=>s.id);
+
+const SKILLS = [
+ {name:"Poser la vraie question", sub:"écoute, diagnostic, reformulation", core:IDS, support:[]},
+ {name:"Modéliser le métier", sub:"BPMN, rôles, cycles de vie, données", core:["savoir","donnees"], support:["livraison","ia"]},
+ {name:"Structurer la livraison", sub:"process, tests, pilotage Jira", core:["livraison"], support:["equipe","plateforme"]},
+ {name:"Arbitrer l’architecture", sub:"faire ou acheter, scénarios chiffrés", core:["plateforme","donnees"], support:["ia","livraison"]},
+ {name:"Faire grandir les équipes", sub:"onboarding, tutorat, externalisation", core:["equipe"], support:["savoir"]},
+ {name:"Rendre visible au dirigeant", sub:"comptes rendus, COPIL, démos", core:["equipe","livraison"], support:["donnees"]},
+ {name:"Intégrer l’IA avec discernement", sub:"cas d’usage, coûts, confidentialité", core:["ia"], support:[]},
+ {name:"Sécuriser et pérenniser", sub:"documentation, accès, résilience", core:["savoir","plateforme"], support:["ia","equipe"]}
+];
+
+const TL = [
+ {y:"2014", t:"Je deviens indépendant", p:"Conseil et direction de projets techno-organisationnels.", s:[]},
+ {y:"2015", t:"Un référentiel client pour 4 marques", p:"Groupe d’édition professionnelle : 8 bases unifiées, scénarios validés par la direction.", s:["donnees","savoir"]},
+ {y:"2016", t:"Reprise d’un système critique", p:"Opérateur de transport, 100+ réseaux : reprise sans documentation, après 8 ans d’un seul responsable.", s:["savoir","donnees"]},
+ {y:"2018", t:"Une plateforme SaaS, page blanche", p:"Entretiens clients, storyboards, cahier des charges, choix sur mesure contre SaaS du marché.", s:["plateforme","livraison"]},
+ {y:"2019", t:"v1.0 et process de livraison", p:"Rôles, cadence de release, tests de non-régression, migration des outils existants.", s:["livraison","equipe"]},
+ {y:"2020", t:"Covid : budget divisé par quatre", p:"La plateforme continue de livrer. Infra as code, test d’intrusion, post-mortem de crise.", s:["plateforme"]},
+ {y:"2021", t:"Infra refondue en 48 h", p:"Étude de scalabilité, fin du mode projet, premiers alternants.", s:["plateforme","equipe"]},
+ {y:"2022", t:"Bascule vers une visio managée", p:"Une brique qui reposait sur un seul expert passe en service managé.", s:["savoir","plateforme"]},
+ {y:"2023", t:"Le socle avant la marque blanche", p:"Migration vers une stack moderne priorisée, règles métier unifiées en atelier.", s:["plateforme","savoir"]},
+ {y:"2024", t:"Le vrai goulot était ailleurs", p:"Délais de test métier mesurés, workflow refondu, prototypes IA chiffrés.", s:["livraison","ia"]},
+ {y:"2025", t:"Agence externe et crise de confiance", p:"Externalisation cadrée, confiance du dirigeant rétablie, organisation cible proposée.", s:["equipe"]},
+ {y:"2026", t:"L’IA dans la fabrication du logiciel", p:"Plan d’adoption par l’équipe de développement, positionnement IA du produit.", s:["ia"]}
+];
+
+const $ = s => document.querySelector(s);
+const chipOf = id => S.find(s=>s.id===id).chip;
+const esc = t => String(t).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- state ---------- */
+const state = { name:"", role:"", first:"", clarity:0, want:0, tone:0, call:"", miss:"", free:"", fiches:{} };
+IDS.forEach(id=> state.fiches[id] = {reson:"", clarity:0, comment:""});
+
+/* ---------- cards ---------- */
+function renderGrid(){
+  $("#grid").innerHTML = S.map(s=>`
+    <article class="card" id="card-${s.id}">
+      <span class="chip">${s.chip}</span>
+      <h3>${s.title}</h3>
+      <ul class="symptoms detail">${s.lives.slice(0,3).map(l=>`<li>${l.replace(/<[^>]+>/g,"")}</li>`).join("")}</ul>
+      <p class="vq">${s.q}</p>
+      <div class="actions">
+        <button class="small go" data-open="${s.id}">Ouvrir la fiche</button>
+        <button class="small" data-me="${s.id}" aria-pressed="${state.fiches[s.id].reson==="vis"}">Je vis ça</button>
+        <span class="status" id="st-${s.id}"></span>
+      </div>
+    </article>`).join("");
+}
+
+/* ---------- matrix ---------- */
+function renderMatrix(){
+  const head = `<thead><tr><th class="row" scope="col"><span class="eyebrow">Compétence</span></th>${S.map(s=>`<th scope="col" data-col="${s.id}"><button data-open="${s.id}">${s.chip}</button></th>`).join("")}</tr></thead>`;
+  const body = SKILLS.map(k=>`<tr><th class="row" scope="row">${k.name}<small>${k.sub}</small></th>${S.map(s=>{
+    const c = k.core.includes(s.id) ? '<i class="dot core" title="au cœur"></i>' : k.support.includes(s.id) ? '<i class="dot support" title="en appui"></i>' : '';
+    return `<td data-col="${s.id}">${c}</td>`;}).join("")}</tr>`).join("");
+  $("#matrix").innerHTML = head + "<tbody>"+body+"</tbody>";
+  $("#matrix").addEventListener("mouseover", e=>{
+    const cell = e.target.closest("[data-col]"); document.querySelectorAll("#matrix td.hl").forEach(x=>x.classList.remove("hl"));
+    if(cell) document.querySelectorAll(`#matrix td[data-col="${cell.dataset.col}"]`).forEach(x=>x.classList.add("hl"));
+  });
+  $("#matrix").addEventListener("mouseleave", ()=>document.querySelectorAll("#matrix td.hl").forEach(x=>x.classList.remove("hl")));
+}
+
+/* ---------- timeline ---------- */
+function renderTimeline(){
+  $("#timeline").innerHTML = TL.map(e=>`<div class="tl"><div class="yr">${e.y}</div><h3>${e.t}</h3><p>${e.p}</p>
+    <div class="tags">${e.s.map(id=>`<button data-open="${id}">${chipOf(id)}</button>`).join("")}</div></div>`).join("");
+}
+
+/* ---------- drawer ---------- */
+let current = -1, lastFocus = null;
+function scaleHTML(key, val, idp){
+  return [1,2,3,4,5].map(n=>`<button type="button" data-scale="${key}" data-v="${n}" aria-pressed="${val===n}" aria-label="${n} sur 5" id="${idp}-${n}">${n}</button>`).join("");
+}
+function openFiche(id, push=true){
+  const i = IDS.indexOf(id); if(i<0) return;
+  current = i; const s = S[i]; const f = state.fiches[id];
+  $("#d-chip").textContent = s.chip;
+  $("#d-body").innerHTML = `
+    <h2 id="d-title">${s.title}</h2>
+    <div class="sec lives"><h4>Ce que vit le dirigeant</h4><ul>${s.lives.map(l=>`<li>${l}</li>`).join("")}</ul></div>
+    <div class="bigq"><span class="eyebrow">La vraie question</span>${s.q}</div>
+    <div class="sec brings"><h4>Ce que j’apporte</h4><ul>${s.brings.map(l=>`<li>${l}</li>`).join("")}</ul></div>
+    <div class="sec done"><h4>Déjà fait</h4><ul>${s.done.map(l=>`<li>${l}</li>`).join("")}</ul></div>
+    <div class="ffb">
+      <h4>Votre réaction sur cette fiche</h4>
+      <div class="reson" role="group" aria-label="Est-ce que cette situation vous parle ?">
+        ${[["vis","Je vis ça"],["proche","Ça me parle un peu"],["pas","Pas mon sujet"]].map(([v,l])=>`<button type="button" class="small" data-reson="${v}" aria-pressed="${f.reson===v}">${l}</button>`).join("")}
+      </div>
+      <div class="field"><span class="lbl" id="dl-clar">Clarté de la fiche</span><div class="scale" role="group" aria-labelledby="dl-clar">${scaleHTML("fclarity", f.clarity, "fc-"+id)}</div></div>
+      <div class="field"><label for="fcom-${id}">Ce que vous changeriez <span class="hint">(un mot, un exemple, une formulation)</span></label><textarea id="fcom-${id}">${esc(f.comment)}</textarea></div>
+      <div class="fbbar"><button type="button" class="btn primary" id="fsave">Enregistrer pour cette fiche</button><span class="note" id="fstatus" role="status"></span></div>
+    </div>`;
+  $("#drawer").classList.add("on"); $("#scrim").classList.add("on"); $("#drawer").setAttribute("aria-hidden","false");
+  $("#d-body").scrollTop = 0;
+  if(push){ try{ history.replaceState(null,"","#"+id); }catch(e){} }
+  if(!lastFocus) lastFocus = document.activeElement;
+  setTimeout(()=>$("#d-close").focus(), 50);
+}
+function closeFiche(){
+  $("#drawer").classList.remove("on"); $("#scrim").classList.remove("on"); $("#drawer").setAttribute("aria-hidden","true");
+  current = -1; try{ history.replaceState(null,"","#situations"); }catch(e){}
+  if(lastFocus && lastFocus.focus) lastFocus.focus(); lastFocus = null;
+}
+$("#d-close").onclick = closeFiche; $("#scrim").onclick = closeFiche;
+$("#d-prev").onclick = ()=> openFiche(IDS[(current+IDS.length-1)%IDS.length]);
+$("#d-next").onclick = ()=> openFiche(IDS[(current+1)%IDS.length]);
+document.addEventListener("keydown", e=>{
+  if(current<0) return;
+  if(e.key==="Escape") closeFiche();
+  if(e.target.matches("textarea,input")) return;
+  if(e.key==="ArrowRight") $("#d-next").click();
+  if(e.key==="ArrowLeft") $("#d-prev").click();
+});
+
+document.addEventListener("click", e=>{
+  const o = e.target.closest("[data-open]"); if(o){ e.preventDefault(); openFiche(o.dataset.open); return; }
+  const m = e.target.closest("[data-me]");
+  if(m){ const id = m.dataset.me; const f = state.fiches[id]; f.reson = f.reson==="vis" ? "" : "vis";
+    m.setAttribute("aria-pressed", f.reson==="vis"); save("st-"+id); return; }
+  const r = e.target.closest("[data-reson]");
+  if(r && current>=0){ const id = IDS[current]; const f = state.fiches[id]; f.reson = f.reson===r.dataset.reson ? "" : r.dataset.reson;
+    r.parentElement.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.reson===f.reson));
+    const cardBtn = document.querySelector(`[data-me="${id}"]`); if(cardBtn) cardBtn.setAttribute("aria-pressed", f.reson==="vis");
+    return; }
+  const sc = e.target.closest("[data-scale]");
+  if(sc){ const key = sc.dataset.scale, v = +sc.dataset.v;
+    if(key==="fclarity" && current>=0) state.fiches[IDS[current]].clarity = v; else state[key] = v;
+    sc.parentElement.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", +b.dataset.v===v)); return; }
+  if(e.target.id==="fsave" && current>=0){ const id = IDS[current];
+    state.fiches[id].comment = $("#fcom-"+id).value.trim(); save("fstatus"); }
+});
+
+/* ---------- level ---------- */
+function setLevel(express){
+  document.body.classList.toggle("express", express);
+  $("#lvl-express").setAttribute("aria-pressed", express); $("#lvl-detail").setAttribute("aria-pressed", !express);
+  try{ localStorage.setItem("lvq-level", express?"x":"d"); }catch(e){}
+}
+$("#lvl-express").onclick = ()=>setLevel(true); $("#lvl-detail").onclick = ()=>setLevel(false);
+try{ if(localStorage.getItem("lvq-level")==="x") setLevel(true); }catch(e){}
+
+/* ---------- form ---------- */
+function fillForm(){
+  $("#f-first").innerHTML = `<option value="">Choisir…</option>` + S.map(s=>`<option value="${s.id}">${s.chip} · ${s.title.replace(/[«»]/g,"").trim()}</option>`).join("");
+  $("#f-name").value = state.name; $("#f-role").value = state.role; $("#f-first").value = state.first;
+  $("#f-call").value = state.call; $("#f-miss").value = state.miss; $("#f-free").value = state.free;
+  $("#s-clarity").innerHTML = scaleHTML("clarity", state.clarity, "sc");
+  $("#s-want").innerHTML = scaleHTML("want", state.want, "sw");
+  $("#s-tone").innerHTML = scaleHTML("tone", state.tone, "st");
+}
+function readForm(){
+  state.name = $("#f-name").value.trim(); state.role = $("#f-role").value.trim(); state.first = $("#f-first").value;
+  state.call = $("#f-call").value.trim(); state.miss = $("#f-miss").value.trim(); state.free = $("#f-free").value.trim();
+}
+function progress(){
+  const n = IDS.filter(id=>{const f=state.fiches[id]; return f.reson||f.clarity||f.comment;}).length;
+  $("#progress").textContent = `Votre avis : ${n}/6`;
+}
+$("#fbform").addEventListener("submit", e=>{ e.preventDefault(); readForm(); save("f-status"); });
+["f-name","f-role","f-call","f-miss","f-free"].forEach(id=> $("#"+id).addEventListener("input", ()=>{ readForm(); draft(); }));
+$("#f-first").addEventListener("change", ()=>{ readForm(); draft(); });
+
+function asText(){
+  readForm();
+  const L = [`Avis de ${state.name||"(sans nom)"}${state.role?" — "+state.role:""}`,
+    `Situation la plus parlante : ${state.first?chipOf(state.first):"-"}`,
+    `Clarté ${state.clarity||"-"}/5 · Envie ${state.want||"-"}/5 · Ton ${state.tone||"-"}/5`,
+    `Ce qui me ferait appeler : ${state.call||"-"}`, `Ce qui manque : ${state.miss||"-"}`, `Souvenir : ${state.free||"-"}`, ""];
+  S.forEach(s=>{const f=state.fiches[s.id]; if(f.reson||f.clarity||f.comment) L.push(`${s.chip} : ${({vis:"je vis ça",proche:"ça me parle un peu",pas:"pas mon sujet"})[f.reson]||"-"} · clarté ${f.clarity||"-"}/5 · ${f.comment||""}`);});
+  return L.join("\n");
+}
+$("#f-copy").onclick = async ()=>{
+  const t = asText();
+  try{ await navigator.clipboard.writeText(t); $("#f-status").textContent = "Avis copié. Collez-le dans un message pour me l’envoyer."; }
+  catch(e){ const ta = $("#f-miss"); $("#f-status").textContent = "La copie automatique est bloquée ici. Sélectionnez le texte du formulaire pour le copier."; ta.focus(); }
+};
+
+/* ---------- persistence ---------- */
+let db = null, uid = null, writing = Promise.resolve();
+function draft(){ try{ localStorage.setItem("lvq-draft", JSON.stringify(state)); }catch(e){} }
+function loadDraft(){ try{ const d = JSON.parse(localStorage.getItem("lvq-draft")||"null"); if(d) merge(d); }catch(e){} }
+function merge(d){
+  ["name","role","first","call","miss","free"].forEach(k=>{ if(typeof d[k]==="string") state[k]=d[k]; });
+  ["clarity","want","tone"].forEach(k=>{ if(typeof d[k]==="number") state[k]=d[k]; });
+  if(d.fiches) IDS.forEach(id=>{ const f=d.fiches[id]; if(f) state.fiches[id] = {reson:String(f.reson||""), clarity:+f.clarity||0, comment:String(f.comment||"")}; });
+}
+function save(statusId){
+  draft(); progress();
+  const st = document.getElementById(statusId);
+  if(!db || !uid){ if(st) st.textContent = "Noté sur cet appareil. Utilisez « Copier mon avis » pour me l’envoyer."; return; }
+  if(st) st.textContent = "Enregistrement…";
+  const body = JSON.parse(JSON.stringify(state)); body.updatedAt = new Date().toISOString();
+  writing = writing.then(()=> db.doc("feedback/"+uid).set(body))
+    .then(()=>{ const el=document.getElementById(statusId); if(el) el.textContent = "Enregistré. Merci !"; })
+    .catch(err=>{ const el=document.getElementById(statusId); if(el) el.textContent =
+      err && err.code==="invalid_argument" ? "Je ne peux pas enregistrer depuis votre accès. Utilisez « Copier mon avis »." : "L’enregistrement a échoué. Réessayez dans un instant."; });
+}
+
+async function initData(){
+  if(!window.claude || !window.claude.use) return;
+  try{
+    const [d, u] = await Promise.all([claude.use("db"), claude.use("user")]);
+    if(!d || !u) return;
+    const id = await u.id(); if(!id) return;
+    db = d; uid = id;
+    const snap = await db.doc("feedback/"+uid).get();
+    if(snap.exists){ merge(snap.data()); fillForm(); renderGrid(); progress(); }
+    if(await u.isOwner()) ownerView();
+  }catch(e){ /* page reste utilisable en mode local */ }
+}
+
+function ownerView(){
+  const box = $("#owner"); box.hidden = false;
+  box.innerHTML = `<p class="eyebrow">Visible par vous seul</p><h3 style="font-size:24px;margin-top:6px">Retours reçus</h3><div id="ow"></div>`;
+  db.collection("feedback").onSnapshot(q=>{
+    const rows = q.docs.map(d=>d.data()).filter(Boolean);
+    const avg = k => { const v = rows.map(r=>+r[k]).filter(Boolean); return v.length ? (v.reduce((a,b)=>a+b,0)/v.length).toFixed(1) : "-"; };
+    const vis = id => rows.filter(r=>r.fiches && r.fiches[id] && r.fiches[id].reson==="vis").length;
+    $("#ow").innerHTML = `
+      <div class="bars"><div class="bar"><b>${rows.length}</b>retours</div><div class="bar"><b>${avg("clarity")}</b>clarté moyenne /5</div><div class="bar"><b>${avg("want")}</b>envie moyenne /5</div></div>
+      <div class="bars">${S.map(s=>`<div class="bar"><b>${vis(s.id)}</b>« je vis ça » · ${s.chip}</div>`).join("")}</div>
+      <div style="overflow-x:auto"><table><thead><tr><th>Qui</th><th>Situation n°1</th><th>Ce qui ferait appeler</th><th>Ce qui manque</th></tr></thead><tbody>
+      ${rows.map(r=>`<tr><td>${esc(r.name||"Anonyme")}<br><span class="note">${esc(r.role||"")}</span></td><td>${r.first&&IDS.includes(r.first)?chipOf(r.first):"-"}</td><td>${esc(r.call||"")}</td><td>${esc(r.miss||"")}</td></tr>`).join("") || `<tr><td colspan="4" class="note">Aucun retour pour l’instant. Partagez la page avec vos bêta-testeurs en accès Contributeur.</td></tr>`}
+      </tbody></table></div>`;
+  }, ()=>{ $("#ow").innerHTML = `<p class="note">Les retours ne peuvent pas être chargés dans cette vue.</p>`; });
+}
+
+/* ---------- hero : du chaos à la clarté ---------- */
+const cv = $("#tangle"), ctx = cv.getContext("2d"), nodesEl = $("#nodes"), slider = $("#clarity");
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let W=0,H=0,T=1, threads=[], seed=7;
+function rnd(){ seed = (seed*16807)%2147483647; return seed/2147483647; }
+function build(){
+  const r = cv.getBoundingClientRect(); const dpr = Math.min(2, window.devicePixelRatio||1);
+  W = r.width; H = r.height; cv.width = W*dpr; cv.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  seed = 7; threads = [];
+  const N = 36, padR = Math.max(110, W*0.3);
+  for(let i=0;i<N;i++){
+    const k = i%6; const ty = H*(0.14 + k*0.144);
+    const sy = H*(0.08 + (i/(N-1))*0.84);
+    threads.push({k,
+      a:[[rnd()*W*0.2, rnd()*H],[rnd()*W, rnd()*H],[rnd()*W, rnd()*H],[W*0.4+rnd()*W*0.5, rnd()*H]],
+      b:[[10, sy],[W*0.38, sy],[W*0.52, ty],[W-padR, ty]] });
+  }
+  nodesEl.innerHTML = S.map((s,k)=>`<button class="node" data-open="${s.id}" style="left:${W-12}px;top:${H*(0.14+k*0.144)}px">${s.chip}</button>`).join("");
+  draw();
+}
+const lerp=(a,b,t)=>a+(b-a)*t, ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+function draw(){
+  const t = ease(T), lag = css("--lagoon"), mut = css("--muted"), sun = css("--sun"), ink = css("--ink");
+  ctx.clearRect(0,0,W,H);
+  threads.forEach((th,i)=>{
+    const p = th.a.map((pa,j)=>[lerp(pa[0],th.b[j][0],t), lerp(pa[1],th.b[j][1],t)]);
+    ctx.beginPath(); ctx.moveTo(p[0][0],p[0][1]); ctx.bezierCurveTo(p[1][0],p[1][1],p[2][0],p[2][1],p[3][0],p[3][1]);
+    ctx.strokeStyle = t>0.5 ? lag : mut; ctx.globalAlpha = lerp(0.45, 0.75, t); ctx.lineWidth = lerp(1.2, 1.8, t); ctx.stroke();
+  });
+  ctx.globalAlpha = 1;
+  const padR = Math.max(110, W*0.3);
+  S.forEach((s,k)=>{ const y=H*(0.14+k*0.144); ctx.beginPath(); ctx.arc(W-padR, y, lerp(2,6,t), 0, Math.PI*2); ctx.fillStyle = t>0.7?sun:ink; ctx.globalAlpha = lerp(0.2,1,t); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(W-padR,y); ctx.lineTo(W-padR+lerp(0,(padR-80),t), y); ctx.strokeStyle=sun; ctx.lineWidth=2; ctx.stroke(); });
+  ctx.globalAlpha = 1;
+  nodesEl.querySelectorAll(".node").forEach(n=>{ n.style.opacity = Math.max(0,(T-0.6)/0.4); n.tabIndex = T>0.8?0:-1; });
+}
+let anim=null;
+function play(){
+  if(reduce){ T=1; slider.value=100; draw(); return; }
+  cancelAnimationFrame(anim); const t0 = performance.now(), from = 0; T = 0;
+  const step = now=>{ const k = Math.min(1,(now-t0)/2600); T = from + (1-from)*k; slider.value = Math.round(T*100); draw(); if(k<1) anim=requestAnimationFrame(step); };
+  setTimeout(()=>{ anim=requestAnimationFrame(step); }, 350);
+}
+slider.addEventListener("input", ()=>{ cancelAnimationFrame(anim); T = slider.value/100; draw(); });
+$("#replay").onclick = play;
+new ResizeObserver(()=>build()).observe(cv);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", draw);
+new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+
+/* ---------- boot ---------- */
+loadDraft(); renderGrid(); renderMatrix(); renderTimeline(); fillForm(); progress();
+build(); play();
+const h = (location.hash||"").slice(1); if(IDS.includes(h)) setTimeout(()=>openFiche(h,false), 400);
+initData();
+</script>
+
+</body>
+</html>
