@@ -11,6 +11,6 @@ Une page HTML autonome (`index.html`), sans dépendance à installer.
 
 ## Retours des lecteurs
 
-Sur GitHub Pages, les avis sont conservés dans le navigateur du lecteur, qui peut les copier et me les envoyer avec le bouton « Copier mon avis ». L'enregistrement centralisé des retours ne fonctionne que dans la version publiée sur claude.ai.
+Sur GitHub Pages, le bouton « Envoyer mon avis » ouvre la messagerie du lecteur avec un e-mail prérempli à sebastien@wavit.me (toutes ses réponses, y compris ses réactions fiche par fiche). Le bouton « Copier mon avis » reste disponible si aucune messagerie n'est configurée. L'enregistrement centralisé des retours ne fonctionne que dans la version publiée sur claude.ai.
 
 Sébastien Richard

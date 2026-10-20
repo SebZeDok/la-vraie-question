@@ -50,6 +50,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
 .seg button{border:0;background:none;padding:6px 12px;border-radius:999px;font-size:13px;font-weight:600;color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.seg.level{margin-bottom:18px}
 .progress{font-family:var(--mono);font-size:12px;padding:6px 10px;border-radius:999px;background:var(--sun-soft);color:var(--ink);white-space:nowrap}
 
 /* hero */
@@ -209,8 +210,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--sun);outline:none}
   .stage canvas{height:330px}
   .nav a.hide-s{display:none}
   .bars{grid-template-columns:1fr}
-  /* le bandeau passe sur deux lignes : collé en haut, il mangerait un huitième de l'écran */
-  .nav{position:static}
+  /* bandeau tenu sur une ligne pour rester collé en haut sans manger l'écran */
+  .nav .wrap{flex-wrap:nowrap;gap:10px}
+  .brand{font-size:16px;white-space:nowrap}
+  .progress{font-size:11px;padding:5px 9px}
   .hero .eyebrow{margin-bottom:10px}
   /* matrice : la colonne des compétences reste visible pendant qu'on fait défiler les situations */
   .matrix table{min-width:560px}
@@ -237,10 +240,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--sun);outline:none}
     <a class="hide-s" href="#situations">Situations</a>
     <a class="hide-s" href="#competences">Compétences</a>
     <a class="hide-s" href="#parcours">Parcours</a>
-    <div class="seg" role="group" aria-label="Niveau de lecture">
-      <button id="lvl-express" aria-pressed="false">Express</button>
-      <button id="lvl-detail" aria-pressed="true">Détaillé</button>
-    </div>
     <a class="progress" href="#avis" id="progress">Votre avis : 0/6</a>
   </div>
 </header>
@@ -248,7 +247,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--sun);outline:none}
 <main class="wrap">
   <section class="hero" aria-labelledby="h1">
     <div>
-      <p class="eyebrow">Bêta-test · offre de conseil aux dirigeants</p>
+      <p class="eyebrow">Offre de conseil aux dirigeants</p>
       <h1 id="h1">J’entre dans vos <span class="scribble">systèmes complexes</span>. J’en ressors avec <em>la vraie question</em>.</h1>
       <p class="lede">Six situations que vivent les dirigeants, ce que j’y apporte, et ce que j’ai déjà fait. Vous me connaissez : votre regard m’aide à rendre l’offre aussi claire que possible.</p>
       <div class="ctas">
@@ -283,6 +282,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--sun);outline:none}
         <h2 id="h-sit">Laquelle vivez-vous en ce moment ?</h2>
         <p>Chaque fiche part de ce que vit le dirigeant, pose la vraie question, puis montre ce que j’apporte et ce que j’ai déjà fait. Ouvrez une fiche pour la voir en détail.</p>
       </div>
+    </div>
+    <div class="seg level" role="group" aria-label="Niveau de lecture">
+      <button id="lvl-express" aria-pressed="false">Express</button>
+      <button id="lvl-detail" aria-pressed="true">Détaillé</button>
     </div>
     <div class="grid" id="grid"></div>
   </section>
@@ -570,7 +573,13 @@ function progress(){
   const n = IDS.filter(id=>{const f=state.fiches[id]; return f.reson||f.clarity||f.comment;}).length;
   $("#progress").textContent = `Votre avis : ${n}/6`;
 }
-$("#fbform").addEventListener("submit", e=>{ e.preventDefault(); readForm(); save("f-status"); });
+const MAILTO = "sebastien@wavit.me";
+$("#fbform").addEventListener("submit", e=>{
+  e.preventDefault(); readForm(); save("f-status");
+  const subject = `Avis sur « La vraie question »${state.name ? " · "+state.name : ""}`;
+  location.href = `mailto:${MAILTO}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(asText())}`;
+  $("#f-status").textContent = `Votre messagerie s’ouvre avec votre avis, il ne reste qu’à l’envoyer. Rien ne s’ouvre ? Copiez votre avis et envoyez-le à ${MAILTO}.`;
+});
 ["f-name","f-role","f-call","f-miss","f-free"].forEach(id=> $("#"+id).addEventListener("input", ()=>{ readForm(); draft(); }));
 $("#f-first").addEventListener("change", ()=>{ readForm(); draft(); });
 
