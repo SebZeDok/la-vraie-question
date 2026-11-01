@@ -599,20 +599,23 @@ function draw(){
   ctx.globalAlpha = 1;
   nodesEl.querySelectorAll(".node").forEach(n=>{ n.style.opacity = Math.max(0,(T-0.6)/0.4); n.tabIndex = T>0.8?0:-1; });
 }
-let anim=null;
-function play(){
+let anim=null, attente=null;
+function stop(){ cancelAnimationFrame(anim); clearTimeout(attente); }
+function play(tours=1){
   if(reduce){ T=1; slider.value=100; draw(); return; }
-  cancelAnimationFrame(anim); const t0 = performance.now(), from = 0; T = 0;
-  const step = now=>{ const k = Math.min(1,(now-t0)/2600); T = from + (1-from)*k; slider.value = Math.round(T*100); draw(); if(k<1) anim=requestAnimationFrame(step); };
-  setTimeout(()=>{ anim=requestAnimationFrame(step); }, 350);
+  stop(); const t0 = performance.now(), from = 0; T = 0;
+  const step = now=>{ const k = Math.min(1,(now-t0)/2600); T = from + (1-from)*k; slider.value = Math.round(T*100); draw();
+    if(k<1) anim=requestAnimationFrame(step);
+    else if(tours>1) attente=setTimeout(()=>play(tours-1), 900); };
+  attente=setTimeout(()=>{ anim=requestAnimationFrame(step); }, 350);
 }
-slider.addEventListener("input", ()=>{ cancelAnimationFrame(anim); T = slider.value/100; draw(); });
-$("#replay").onclick = play;
+slider.addEventListener("input", ()=>{ stop(); T = slider.value/100; draw(); });
+$("#replay").onclick = ()=>play();
 new ResizeObserver(()=>build()).observe(cv);
 
 /* ---------- boot ---------- */
 renderGrid(); renderMatrix(); renderTimeline(); fillForm();
-build(); play();
+build(); play(3);
 const h = (location.hash||"").slice(1); if(IDS.includes(h)) setTimeout(()=>openFiche(h,false), 400);
 </script>
 
