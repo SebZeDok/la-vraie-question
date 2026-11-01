@@ -1,0 +1,4 @@
+# Redirige toutes les visites en http vers https
+RewriteEngine On
+RewriteCond %{SERVER_PORT} 80
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
