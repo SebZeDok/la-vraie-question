@@ -7,7 +7,11 @@ Une page HTML autonome (`index.html`), sans dépendance à installer, à l'ident
 ## Voir la page
 
 - En local : ouvrir `index.html` dans un navigateur.
-- En ligne : https://sebzedok.github.io/la-vraie-question/ (GitHub Pages, branche `main`, dossier `/`).
+- En ligne : https://wavit.me (hébergement OVH).
+
+## Mise en ligne
+
+Déploiement manuel : déposer `index.html`, `wavit-logo.jpg` et `.htaccess` dans le dossier `www` de l'hébergement OVH, avec un client SFTP (Cyberduck). Une release GitHub ne met pas le site à jour. Le fichier `.htaccess` redirige les visites en http vers https.
 
 ## Contact
 
