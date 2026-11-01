@@ -148,6 +148,18 @@ body.express .detail{display:none}
 .door li{padding:12px 14px 12px 18px;border-left:6px solid var(--jaune);background:color-mix(in srgb, var(--bg) 8%, transparent);border-radius:4px 12px 12px 4px;font-size:15.5px}
 .door .proofline{grid-column:1/-1;font-size:14px;opacity:.85;border-top:1px solid color-mix(in srgb, var(--bg) 30%, transparent);padding-top:16px}
 
+/* situations : même traitement que la porte de sortie */
+.sits{background:var(--ink);color:var(--bg);border-radius:24px;padding:44px clamp(20px,4vw,56px);box-shadow:6px 6px 0 var(--jaune)}
+.sits :focus-visible{outline-color:var(--jaune)}
+.sits .eyebrow{color:inherit;opacity:.75}
+.sits .head h2{font-size:clamp(30px,4vw,48px)}
+.sits .head p:not(.eyebrow){color:inherit;opacity:.88}
+.sits .card{background:color-mix(in srgb, var(--bg) 8%, transparent);border:1.5px solid color-mix(in srgb, var(--bg) 30%, transparent)}
+.sits .card:hover{box-shadow:6px 6px 0 var(--jaune)}
+.sits .symptoms{color:inherit}
+.sits .symptoms li{opacity:.88}
+.sits .symptoms li::before{color:var(--jaune)}
+
 /* contact */
 .fb{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .field{display:flex;flex-direction:column;gap:6px;min-width:0}
@@ -267,6 +279,7 @@ input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 4px var(--
   </div>
 
   <section class="block" id="situations" aria-labelledby="h-sit">
+    <div class="sits">
     <div class="head">
       <div>
         <p class="eyebrow">Six situations</p>
@@ -279,6 +292,7 @@ input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 4px var(--
       <button id="lvl-detail" aria-pressed="true">Détaillé</button>
     </div>
     <div class="grid" id="grid"></div>
+    </div>
   </section>
 
   <section class="block" id="competences" aria-labelledby="h-comp">
